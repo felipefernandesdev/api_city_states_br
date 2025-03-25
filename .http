@@ -1,0 +1,14 @@
+### Listar todos os estados
+GET http://localhost:3333/estados
+
+### Buscar estado por UF (exemplo: AC)
+GET http://localhost:3333/estados/CE
+
+### Buscar estado por nome (exemplo: Acre)
+GET http://localhost:3333/estado/nome/Acre
+
+### Listar cidades de um estado por UF (exemplo: AC)
+GET http://localhost:3333/estados/AC/cidades
+
+### Buscar cidades por parte do nome (exemplo: "Rio")
+GET http://localhost:3333/cidades/Forta
