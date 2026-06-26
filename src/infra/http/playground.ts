@@ -116,6 +116,26 @@ export const swaggerHtml = `<!DOCTYPE html>
         </div>
         <div class="result" id="r8"><div class="status" id="s8"></div><pre id="p8"></pre></div>
       </div>
+
+      <div class="card">
+        <div class="card-header"><span class="badge">GET</span><span class="path">/cep/:cep</span></div>
+        <p class="desc">Consulta CEP (8 dígitos)</p>
+        <div class="row">
+          <input id="i9" value="/cep/01001000">
+          <button class="btn" onclick="go('i9','r9')">Testar</button>
+        </div>
+        <div class="result" id="r9"><div class="status" id="s9"></div><pre id="p9"></pre></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><span class="badge">GET</span><span class="path">/cep/busca/:uf/:cidade/:logradouro</span></div>
+        <p class="desc">Busca CEP por endereço</p>
+        <div class="row">
+          <input id="i10" value="/cep/busca/SP/São Paulo/Sé">
+          <button class="btn" onclick="go('i10','r10')">Testar</button>
+        </div>
+        <div class="result" id="r10"><div class="status" id="s10"></div><pre id="p10"></pre></div>
+      </div>
     </div>
   </div>
   <div class="footer">
