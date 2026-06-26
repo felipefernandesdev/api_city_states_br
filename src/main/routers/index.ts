@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { swaggerSpec } from "../../infra/http/swagger";
-import { v1Routes } from "./v1";
+import locationsController from "../../app/controllers/cidades-estados-controller";
+import { validateUF, validateNome } from "../../infra/http/validators";
+import { swaggerHtml } from "../../infra/http/playground";
 
 const routes = Router();
 
@@ -8,66 +9,34 @@ routes.get("/", (_req, res) => {
   res.json({
     mensagem: "API Cidades & Estados está online!",
     versao: "1.1.0",
-    documentacao: "/docs",
+    playground: "/playground",
     endpoints: {
-      v1: "/v1",
-      health: "/v1/health",
+      estados: "/estados",
+      estadoPorUf: "/estados/:uf",
+      estadoPorNome: "/estado/nome/:nome",
+      cidadesPorEstado: "/estados/:uf/cidades",
+      cidadesPorNome: "/cidades/:nome",
+      contagem: "/estados/contagem",
+      buscaAvancada: "/cidades/busca/avancada",
     },
   });
 });
 
-// Endpoint para o OpenAPI spec JSON
-routes.get("/openapi.json", (_req, res) => {
-  res.json(swaggerSpec);
-});
-
-// Swagger UI via CDN (funciona em serverless/Vercel)
-routes.get("/docs", (_req, res) => {
+routes.get("/playground", (_req, res) => {
   res.setHeader("Content-Type", "text/html");
-  res.send(`<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>API Cidades & Estados - Docs</title>
-  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css">
-</head>
-<body>
-  <div id="swagger-ui"></div>
-  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
-  <script>
-    SwaggerUIBundle({
-      url: '/openapi.json',
-      dom_id: '#swagger-ui',
-      presets: [
-        SwaggerUIBundle.presets.apis,
-        SwaggerUIBundle.SwaggerUIStandalonePreset
-      ],
-      layout: "BaseLayout",
-      deepLinking: true
-    });
-  </script>
-</body>
-</html>`);
+  res.send(swaggerHtml);
 });
 
-// Rotas v1
-routes.use("/v1", v1Routes);
+routes.get("/health", (_req, res) => {
+  res.json({ status: "ok", uptime: process.uptime() });
+});
 
-// Redirecionar endpoints legados para v1
-routes.get("/estados", (req, res) => {
-  res.redirect(301, `/v1/estados${req.url.includes("?") ? req.url.substring(req.url.indexOf("?")) : ""}`);
-});
-routes.get("/estados/:uf", (req, res) => {
-  res.redirect(301, `/v1/estados/${req.params.uf}`);
-});
-routes.get("/estado/nome/:nome", (req, res) => {
-  res.redirect(301, `/v1/estado/nome/${req.params.nome}`);
-});
-routes.get("/estados/:uf/cidades", (req, res) => {
-  res.redirect(301, `/v1/estados/${req.params.uf}/cidades`);
-});
-routes.get("/cidades/:nome", (req, res) => {
-  res.redirect(301, `/v1/cidades/${req.params.nome}`);
-});
+routes.get("/estados/contagem", locationsController.getContagemCidades);
+routes.get("/cidades/busca/avancada", locationsController.buscaAvancada);
+routes.get("/estados", locationsController.getEstados);
+routes.get("/estados/:uf", validateUF, locationsController.getEstadoPorUF);
+routes.get("/estado/nome/:nome", validateNome, locationsController.getEstadoPorNome);
+routes.get("/estados/:uf/cidades", validateUF, locationsController.getCidadesPorEstado);
+routes.get("/cidades/:nome", validateNome, locationsController.getCidadesPorNome);
 
 export { routes };
