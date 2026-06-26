@@ -1,28 +1,44 @@
 import { Router } from "express";
-import locationsController from "../../app/controllers/cidades-estados-controller";
-import { validateUF, validateNome } from "../../infra/http/validators";
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "../../infra/http/swagger";
+import { v1Routes } from "./v1";
 
 const routes = Router();
 
 routes.get("/", (_req, res) => {
   res.json({
     mensagem: "API Cidades & Estados está online!",
-    detalhes: {
-      versão: "1.1.0",
-      ambiente: process.env.NODE_ENV || "development",
-      endpoints: ["/estados", "/estados/:uf", "/estado/nome/:nome", "/estados/:uf/cidades", "/cidades/:nome"],
+    versao: "1.1.0",
+    documentacao: "/docs",
+    endpoints: {
+      v1: "/v1",
+      health: "/v1/health",
     },
   });
 });
 
-routes.get("/health", (_req, res) => {
-  res.json({ status: "ok", uptime: process.uptime() });
-});
+routes.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss: ".swagger-ui .topbar { display: none }",
+  customSiteTitle: "API Cidades & Estados - Docs",
+}));
 
-routes.get("/estados", locationsController.getEstados);
-routes.get("/estados/:uf", validateUF, locationsController.getEstadoPorUF);
-routes.get("/estado/nome/:nome", validateNome, locationsController.getEstadoPorNome);
-routes.get("/estados/:uf/cidades", validateUF, locationsController.getCidadesPorEstado);
-routes.get("/cidades/:nome", validateNome, locationsController.getCidadesPorNome);
+routes.use("/v1", v1Routes);
+
+// Redirecionar endpoints legados para v1
+routes.get("/estados", (_req, res) => {
+  res.redirect(301, `/v1/estados${_req.url.includes("?") ? _req.url.substring(_req.url.indexOf("?")) : ""}`);
+});
+routes.get("/estados/:uf", (_req, res) => {
+  res.redirect(301, `/v1/estados/${_req.params.uf}`);
+});
+routes.get("/estado/nome/:nome", (_req, res) => {
+  res.redirect(301, `/v1/estado/nome/${_req.params.nome}`);
+});
+routes.get("/estados/:uf/cidades", (_req, res) => {
+  res.redirect(301, `/v1/estados/${_req.params.uf}/cidades`);
+});
+routes.get("/cidades/:nome", (_req, res) => {
+  res.redirect(301, `/v1/cidades/${_req.params.nome}`);
+});
 
 export { routes };
