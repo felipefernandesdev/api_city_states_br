@@ -462,10 +462,10 @@ export const swaggerHtml = `<!DOCTYPE html>
         const statusText = res.ok ? res.status + ' OK' : res.status + ' ' + res.statusText;
         
         responseEl.className = 'response visible ' + statusClass;
-        responseEl.innerHTML = '<span class="status-badge ' + statusClass + '"><span class="status-dot"></span> ' + statusText + '</span>\\n' + JSON.stringify(data, null, 2);
+        responseEl.innerHTML = '<span class="status-badge ' + statusClass + '"><span class="status-dot"></span> ' + statusText + '</span>\n' + JSON.stringify(data, null, 2);
       } catch (err) {
         responseEl.className = 'response visible error';
-        responseEl.innerHTML = '<span class="status-badge error"><span class="status-dot"></span> Erro de conexão</span>\\n' + err.message;
+        responseEl.innerHTML = '<span class="status-badge error"><span class="status-dot"></span> Erro de conexão</span>\n' + err.message;
       } finally {
         btn.disabled = false;
         btn.textContent = 'Testar';
