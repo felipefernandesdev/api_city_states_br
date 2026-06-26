@@ -49,6 +49,27 @@ GET http://localhost:3333/cidades/busca/avancada?nome=São
 ### Busca avançada - paginada
 GET http://localhost:3333/cidades/busca/avancada?nome=A&limite=5
 
+### Consulta CEP
+GET http://localhost:3333/cep/01001000
+
+### Consulta CEP (São Paulo - Praça da Sé)
+GET http://localhost:3333/cep/01001000
+
+### Consulta CEP (Rio de Janeiro)
+GET http://localhost:3333/cep/22041080
+
+### Busca CEP por endereço
+GET http://localhost:3333/cep/busca/SP/São Paulo/Sé
+
+### Busca CEP por endereço (Rio)
+GET http://localhost:3333/cep/busca/RJ/Rio de Janeiro/Copacabana
+
+### Erro: CEP inválido
+GET http://localhost:3333/cep/123
+
+### Erro: CEP não encontrado
+GET http://localhost:3333/cep/99999999
+
 ### Erro: UF inválida
 GET http://localhost:3333/estados/A
 

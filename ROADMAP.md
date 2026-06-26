@@ -47,6 +47,7 @@
 - [x] Endpoint: Contagem de cidades por estado
 - [x] Endpoint: Busca avançada com filtros
 - [x] Playground HTML interativo
+- [x] Consulta CEP via ViaCEP
 
 **Entrega:** v2.0.0 — "API completa e documentada"
 
