@@ -13,15 +13,29 @@ API REST para consulta de estados e cidades brasileiras. Dados oficiais do IBGE 
 
 ## Endpoints
 
+### v1 (atual)
+
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | GET | `/` | Informações da API |
-| GET | `/health` | Health check |
-| GET | `/estados` | Lista todos os estados |
-| GET | `/estados/:uf` | Estado por UF (sigla) |
-| GET | `/estado/nome/:nome` | Estado por nome (busca parcial) |
-| GET | `/estados/:uf/cidades` | Cidades de um estado |
-| GET | `/cidades/:nome` | Busca cidade por nome |
+| GET | `/docs` | Documentação Swagger |
+| GET | `/v1/health` | Health check |
+| GET | `/v1/estados` | Lista estados (paginado) |
+| GET | `/v1/estados/:uf` | Estado por UF |
+| GET | `/v1/estado/nome/:nome` | Estado por nome |
+| GET | `/v1/estados/:uf/cidades` | Cidades de um estado (paginado) |
+| GET | `/v1/cidades/:nome` | Busca cidade por nome |
+| GET | `/v1/estados/contagem` | Contagem de cidades por estado |
+| GET | `/v1/cidades/busca/avancada` | Busca avançada com filtros |
+
+### Legado (redireciona para v1)
+
+| Método | Endpoint | Redireciona para |
+|--------|----------|------------------|
+| GET | `/estados` | `/v1/estados` |
+| GET | `/estados/:uf` | `/v1/estados/:uf` |
+| GET | `/estados/:uf/cidades` | `/v1/estados/:uf/cidades` |
+| GET | `/cidades/:nome` | `/v1/cidades/:nome` |
 
 ## Setup Local
 
@@ -93,7 +107,7 @@ curl http://localhost:3333/estados/AC/cidades
 ### Buscar cidade por nome
 
 ```bash
-curl http://localhost:3333/cidades/Rio
+curl http://localhost:3333/v1/cidades/Rio
 ```
 
 ```json
@@ -102,6 +116,36 @@ curl http://localhost:3333/cidades/Rio
   { "cidade": "Rio de Janeiro", "estado": "RJ" }
 ]
 ```
+
+### Contagem de cidades por estado
+
+```bash
+curl http://localhost:3333/v1/estados/contagem
+```
+
+```json
+{
+  "dados": [
+    { "sigla": "MG", "nome": "Minas Gerais", "totalCidades": 853 },
+    { "sigla": "SP", "nome": "São Paulo", "totalCidades": 645 }
+  ],
+  "total": 5595
+}
+```
+
+### Busca avançada
+
+```bash
+# Cidades com "Rio" em SP
+curl "http://localhost:3333/v1/cidades/busca/avancada?nome=Rio&estado=SP"
+
+# Paginar resultados
+curl "http://localhost:3333/v1/estados?pagina=2&limite=10"
+```
+
+### Documentação Swagger
+
+Acesse `http://localhost:3333/docs` para ver a documentação interativa da API.
 
 ## Dados
 
