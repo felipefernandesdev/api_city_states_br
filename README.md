@@ -13,29 +13,18 @@ API REST para consulta de estados e cidades brasileiras. Dados oficiais do IBGE 
 
 ## Endpoints
 
-### v1 (atual)
-
 | Método | Endpoint | Descrição |
 |--------|----------|-----------|
 | GET | `/` | Informações da API |
-| GET | `/docs` | Documentação Swagger |
-| GET | `/v1/health` | Health check |
-| GET | `/v1/estados` | Lista estados (paginado) |
-| GET | `/v1/estados/:uf` | Estado por UF |
-| GET | `/v1/estado/nome/:nome` | Estado por nome |
-| GET | `/v1/estados/:uf/cidades` | Cidades de um estado (paginado) |
-| GET | `/v1/cidades/:nome` | Busca cidade por nome |
-| GET | `/v1/estados/contagem` | Contagem de cidades por estado |
-| GET | `/v1/cidades/busca/avancada` | Busca avançada com filtros |
-
-### Legado (redireciona para v1)
-
-| Método | Endpoint | Redireciona para |
-|--------|----------|------------------|
-| GET | `/estados` | `/v1/estados` |
-| GET | `/estados/:uf` | `/v1/estados/:uf` |
-| GET | `/estados/:uf/cidades` | `/v1/estados/:uf/cidades` |
-| GET | `/cidades/:nome` | `/v1/cidades/:nome` |
+| GET | `/playground` | Playground HTML interativo |
+| GET | `/health` | Health check |
+| GET | `/estados` | Lista estados (paginado) |
+| GET | `/estados/:uf` | Estado por UF |
+| GET | `/estado/nome/:nome` | Estado por nome |
+| GET | `/estados/:uf/cidades` | Cidades de um estado (paginado) |
+| GET | `/cidades/:nome` | Busca cidade por nome |
+| GET | `/estados/contagem` | Contagem de cidades por estado |
+| GET | `/cidades/busca/avancada` | Busca avançada com filtros |
 
 ## Setup Local
 
@@ -74,10 +63,18 @@ curl http://localhost:3333/estados
 ```
 
 ```json
-[
-  { "sigla": "AC", "nome": "Acre" },
-  { "sigla": "AL", "nome": "Alagoas" }
-]
+{
+  "dados": [
+    { "sigla": "AC", "nome": "Acre" },
+    { "sigla": "AL", "nome": "Alagoas" }
+  ],
+  "paginacao": {
+    "paginaAtual": 1,
+    "totalPaginas": 1,
+    "totalItens": 27,
+    "limite": 27
+  }
+}
 ```
 
 ### Buscar estado por UF
@@ -101,13 +98,21 @@ curl http://localhost:3333/estados/AC/cidades
 ```
 
 ```json
-["Acrelândia", "Assis Brasil", "Brasiléia", "..."]
+{
+  "dados": ["Acrelândia", "Assis Brasil", "Brasiléia"],
+  "paginacao": {
+    "paginaAtual": 1,
+    "totalPaginas": 1,
+    "totalItens": 22,
+    "limite": 50
+  }
+}
 ```
 
 ### Buscar cidade por nome
 
 ```bash
-curl http://localhost:3333/v1/cidades/Rio
+curl http://localhost:3333/cidades/Rio
 ```
 
 ```json
@@ -120,7 +125,7 @@ curl http://localhost:3333/v1/cidades/Rio
 ### Contagem de cidades por estado
 
 ```bash
-curl http://localhost:3333/v1/estados/contagem
+curl http://localhost:3333/estados/contagem
 ```
 
 ```json
@@ -137,15 +142,15 @@ curl http://localhost:3333/v1/estados/contagem
 
 ```bash
 # Cidades com "Rio" em SP
-curl "http://localhost:3333/v1/cidades/busca/avancada?nome=Rio&estado=SP"
+curl "http://localhost:3333/cidades/busca/avancada?nome=Rio&estado=SP"
 
 # Paginar resultados
-curl "http://localhost:3333/v1/estados?pagina=2&limite=10"
+curl "http://localhost:3333/estados?pagina=2&limite=10"
 ```
 
-### Documentação Swagger
+### Playground
 
-Acesse `http://localhost:3333/docs` para ver a documentação interativa da API.
+Acesse `http://localhost:3333/playground` para testar os endpoints interativamente.
 
 ## Dados
 
@@ -194,7 +199,8 @@ src/
     ├── http/
     │   ├── index.ts                # App Express
     │   ├── error-handler.ts        # Middleware de erros
-    │   └── validators.ts           # Validação de input
+    │   ├── validators.ts           # Validação de input
+    │   └── playground.ts           # HTML do playground
     └── data/
         ├── data-source.ts          # Cache em memória
         ├── data-source.test.ts     # Testes unitários

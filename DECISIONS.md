@@ -29,7 +29,7 @@ Usar Express.js como framework HTTP, por ser leve, maduro e suficiente para o ca
 
 ---
 
-## ADR-002: Dados em JSON Local
+## ADR-002: Dados em JSON Local com Cache em Memória
 
 **Status:** Aceito
 
@@ -39,13 +39,13 @@ Usar Express.js como framework HTTP, por ser leve, maduro e suficiente para o ca
 Os dados de estados e cidades são estáticos e não mudam frequentemente. Não há necessidade de banco de dados.
 
 **Decisão:**
-Armazenar dados em arquivo JSON local (`estados-cidades.json`) carregado em memória a cada request.
+Armazenar dados em arquivo JSON local (`estados-cidades.json`) com cache em memória via `data-source.ts`.
 
 **Consequências:**
 - ✅ Zero configuração de banco de dados
-- ✅ Dados always available (sem dependência externa)
+- ✅ Dados sempre disponíveis (sem dependência externa)
 - ✅ Deploy simples (serverless sem DB)
-- ❌ Dados carregados a cada request (poderia ser cacheado)
+- ✅ Performance: dados carregados uma única vez
 - ❌ Atualização de dados requer deploy
 
 ---
@@ -91,19 +91,84 @@ Usar TypeScript com `strict: true` no tsconfig, sem `any`, `ts-ignore`, ou `@ts-
 
 ---
 
-## ADR-005: Controller Singleton
+## ADR-005: Rate Limiting
 
 **Status:** Aceito
 
 **Data:** 2026-06-26
 
 **Contexto:**
-A API tem um único controller com 5 endpoints. Não há necessidade de DI ou factory patterns.
+API pública sem autenticação, vulnerável a abuso.
 
 **Decisão:**
-Exportar instância singleton do controller: `export default new CidadesEstadosController()`.
+Usar `express-rate-limit` com limite de 100 requests por 15 minutos.
 
 **Consequências:**
-- ✅ Simplicidade
-- ✅ Menos boilerplate
-- ❌ Difícil de mockar em testes (pode ser resolvido depois)
+- ✅ Proteção contra abuso
+- ✅ Configuração simples
+- ❌ Pode bloquear usuários legítimos em caso de alto tráfego
+
+---
+
+## ADR-006: Playground HTML em vez de Swagger
+
+**Status:** Aceito
+
+**Data:** 2026-06-26
+
+**Contexto:**
+Swagger UI (`swagger-ui-express`) não funciona em ambiente serverless (Vercel) por precisar servir arquivos estáticos.
+
+**Decisão:**
+Criar playground HTML interativo customizado em `/playground`.
+
+**Alternativas Consideradas:**
+1. Swagger UI via CDN → Rejeitado: dependência externa, difícil de customizar
+2. Swagger UI express → Rejeitado: não funciona em serverless
+3. Redoc → Rejeitado: mesma limitação do Swagger
+
+**Consequências:**
+- ✅ Funciona em serverless
+- ✅ Totalmente customizável
+- ✅ Sem dependências externas
+- ❌ Não segue padrão OpenAPI
+- ❌ Mais trabalho de manutenção
+
+---
+
+## ADR-007: Validação de Input
+
+**Status:** Aceito
+
+**Data:** 2026-06-26
+
+**Contexto:**
+Parâmetros de rota como `:uf` e `:nome` aceitam qualquer valor, incluindo strings gigantes e caracteres especiais.
+
+**Decisão:**
+Middlewares de validação (`validators.ts`) para UF (regex `^[A-Z]{2}$`) e nome (máximo 100 caracteres).
+
+**Consequências:**
+- ✅ Proteção contra inputs maliciosos
+- ✅ Mensagens de erro claras
+- ✅ Separação de responsabilidades
+- ❌ Mais uma camada de middleware
+
+---
+
+## ADR-008: Error Handler Centralizado
+
+**Status:** Aceito
+
+**Data:** 2026-06-26
+
+**Contexto:**
+Erros não tratados resultam em respostas 500 genéricas sem informação útil.
+
+**Decisão:**
+Middleware `error-handler.ts` com classe `AppError` para erros customizados.
+
+**Consequências:**
+- ✅ Respostas de erro padronizadas
+- ✅ Logs centralizados
+- ✅ Separação de responsabilidades

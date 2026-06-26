@@ -1,7 +1,7 @@
 import { Router } from "express";
-import swaggerUi from "swagger-ui-express";
-import { swaggerSpec } from "../../infra/http/swagger";
-import { v1Routes } from "./v1";
+import locationsController from "../../app/controllers/cidades-estados-controller";
+import { validateUF, validateNome } from "../../infra/http/validators";
+import { swaggerHtml } from "../../infra/http/playground";
 
 const routes = Router();
 
@@ -9,36 +9,34 @@ routes.get("/", (_req, res) => {
   res.json({
     mensagem: "API Cidades & Estados está online!",
     versao: "1.1.0",
-    documentacao: "/docs",
+    playground: "/playground",
     endpoints: {
-      v1: "/v1",
-      health: "/v1/health",
+      estados: "/estados",
+      estadoPorUf: "/estados/:uf",
+      estadoPorNome: "/estado/nome/:nome",
+      cidadesPorEstado: "/estados/:uf/cidades",
+      cidadesPorNome: "/cidades/:nome",
+      contagem: "/estados/contagem",
+      buscaAvancada: "/cidades/busca/avancada",
     },
   });
 });
 
-routes.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: ".swagger-ui .topbar { display: none }",
-  customSiteTitle: "API Cidades & Estados - Docs",
-}));
+routes.get("/playground", (_req, res) => {
+  res.setHeader("Content-Type", "text/html");
+  res.send(swaggerHtml);
+});
 
-routes.use("/v1", v1Routes);
+routes.get("/health", (_req, res) => {
+  res.json({ status: "ok", uptime: process.uptime() });
+});
 
-// Redirecionar endpoints legados para v1
-routes.get("/estados", (_req, res) => {
-  res.redirect(301, `/v1/estados${_req.url.includes("?") ? _req.url.substring(_req.url.indexOf("?")) : ""}`);
-});
-routes.get("/estados/:uf", (_req, res) => {
-  res.redirect(301, `/v1/estados/${_req.params.uf}`);
-});
-routes.get("/estado/nome/:nome", (_req, res) => {
-  res.redirect(301, `/v1/estado/nome/${_req.params.nome}`);
-});
-routes.get("/estados/:uf/cidades", (_req, res) => {
-  res.redirect(301, `/v1/estados/${_req.params.uf}/cidades`);
-});
-routes.get("/cidades/:nome", (_req, res) => {
-  res.redirect(301, `/v1/cidades/${_req.params.nome}`);
-});
+routes.get("/estados/contagem", locationsController.getContagemCidades);
+routes.get("/cidades/busca/avancada", locationsController.buscaAvancada);
+routes.get("/estados", locationsController.getEstados);
+routes.get("/estados/:uf", validateUF, locationsController.getEstadoPorUF);
+routes.get("/estado/nome/:nome", validateNome, locationsController.getEstadoPorNome);
+routes.get("/estados/:uf/cidades", validateUF, locationsController.getCidadesPorEstado);
+routes.get("/cidades/:nome", validateNome, locationsController.getCidadesPorNome);
 
 export { routes };
