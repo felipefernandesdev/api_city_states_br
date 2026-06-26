@@ -1,2 +1,4 @@
-import { App } from '../infra/http/index';
-new App('3333');
+import { App } from "../infra/http/index";
+
+const app = new App();
+app.listen();

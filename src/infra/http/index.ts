@@ -2,41 +2,64 @@ import "dotenv/config";
 import cors from "cors";
 import logger from "morgan";
 import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import express, { Express } from "express";
 import { routes } from "../../main/routers/index";
+import { errorHandler } from "./error-handler";
 
 class App {
-  private app: Express;
+  public app: Express;
   private port: string;
 
   constructor(port?: string) {
     this.port = port ?? `${process.env.PORT}`;
     this.app = express();
     this.configure();
-    this.routes();
     this.middlewares();
-    this.bootstrap(this.port);
+    this.routes();
+    this.errorHandling();
   }
-  configure() {
+
+  private configure(): void {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: true }));
   }
-  middlewares() {
+
+  private middlewares(): void {
     this.app.use(cors());
     this.app.use(helmet());
+
+    const limiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: false,
+      message: { error: "Muitas requisições. Tente novamente em 15 minutos." },
+    });
+    this.app.use(limiter);
+
+    this.app.use((_req, res, next) => {
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      next();
+    });
+
     this.app.use(logger("combined"));
   }
-  routes() {
+
+  private routes(): void {
     this.app.use(routes);
   }
-  bootstrap(port: string) {
-    this.app
-      .listen(port)
-      .on("listening", () =>
-        console.info(
-          `🚀 API Cidades e Estados is running! By Felipe Fernandes! at port: 👉 ${port}, process: ${process.pid}`
-        )
+
+  private errorHandling(): void {
+    this.app.use(errorHandler);
+  }
+
+  public listen(): void {
+    this.app.listen(this.port, () => {
+      console.info(
+        `🚀 API Cidades e Estados is running! at port: ${this.port}, process: ${process.pid}`
       );
+    });
   }
 }
 

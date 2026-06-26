@@ -1,143 +1,169 @@
-```markdown
-# 🚀 API Cidades & Estados - Documentação Oficial 🌍✨
+# API Cidades & Estados
 
-Bem-vindo ao coração da **API Cidades & Estados**! Esta é uma solução simples, elegante e poderosa para acessar informações sobre estados e cidades do Brasil. Feita com ❤️ e Node.js, esta API foi projetada para ser fácil de usar e integrar em seus projetos.
+API REST para consulta de estados e cidades brasileiras. Dados oficiais do IBGE (DTB 2024).
 
----
+## Stack
 
-## 📋 Sumário
+- Node.js 18 + Express.js
+- TypeScript (strict mode)
+- Vitest + Supertest (testes)
+- ESLint + Prettier
+- Docker
+- Deploy: Vercel (serverless)
 
-1. [Visão Geral](#visão-geral)
-2. [Endpoints Disponíveis](#endpoints-disponíveis)
-3. [Como Usar a API](#como-usar-a-api)
-4. [Exemplos de Requisições](#exemplos-de-requisições)
-5. [Sobre o Autor](#sobre-o-autor)
-6. [Contato](#contato)
+## Endpoints
 
----
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| GET | `/` | Informações da API |
+| GET | `/health` | Health check |
+| GET | `/estados` | Lista todos os estados |
+| GET | `/estados/:uf` | Estado por UF (sigla) |
+| GET | `/estado/nome/:nome` | Estado por nome (busca parcial) |
+| GET | `/estados/:uf/cidades` | Cidades de um estado |
+| GET | `/cidades/:nome` | Busca cidade por nome |
 
-## 🌆 Visão Geral
+## Setup Local
 
-A **API Cidades & Estados** é uma ferramenta desenvolvida para fornecer dados geográficos de forma rápida e eficiente. Com ela, você pode obter informações detalhadas sobre estados e cidades do Brasil, facilitando o desenvolvimento de sistemas que dependem desses dados.
+```bash
+# Instalar dependências
+npm install
 
-- **Versão Atual:** `1.0.0`
-- **Ambiente:** Pode ser usado tanto em modo de desenvolvimento quanto em produção.
-- **Tecnologias Utilizadas:** Node.js, Express.js.
+# Copiar variáveis de ambiente
+cp .env.example .env
 
----
-
-## 🛣️ Endpoints Disponíveis
-
-| Método | Endpoint                          | Descrição                                                                 |
-|--------|-----------------------------------|---------------------------------------------------------------------------|
-| GET    | `/`                               | Retorna uma mensagem de boas-vindas com informações sobre a API.          |
-| GET    | `/estados`                        | Lista todos os estados do Brasil.                                        |
-| GET    | `/estados/:uf`                    | Retorna informações de um estado específico com base na UF (sigla).      |
-| GET    | `/estado/nome/:nome`              | Retorna informações de um estado específico com base no nome.            |
-| GET    | `/estados/:uf/cidades`            | Lista todas as cidades de um estado específico com base na UF.           |
-| GET    | `/cidades/:nome`                  | Retorna informações de uma cidade específica com base no nome.           |
-
----
-
-## 🔧 Como Usar a API
-
-Para começar a usar a API, basta fazer requisições HTTP para os endpoints listados acima. A API responde em formato JSON, facilitando a integração com qualquer aplicação.
-
-### Exemplo de URL Base
-```
-https://api-cidades-estados.com
+# Iniciar em modo desenvolvimento
+npm run dev
 ```
 
-### Autenticação
-Atualmente, a API não requer autenticação. No entanto, futuras versões podem incluir métodos de autenticação para maior segurança.
+A API estará disponível em `http://localhost:3333`.
 
----
+## Comandos
 
-## 📡 Exemplos de Requisições
+| Comando | Descrição |
+|---------|-----------|
+| `npm run dev` | Servidor com hot reload |
+| `npm run build` | Compilar TypeScript |
+| `npm start` | Iniciar em produção |
+| `npm run test` | Rodar testes |
+| `npm run test:watch` | Testes em watch mode |
+| `npm run lint` | Verificar lint |
+| `npm run lint:fix` | Corrigir lint |
+| `npm run typecheck` | Verificar tipos |
 
-### 1. Listar Todos os Estados
-**Endpoint:** `/estados`  
-**Método:** `GET`  
-**Resposta:**
+## Exemplos de Uso
+
+### Listar estados
+
+```bash
+curl http://localhost:3333/estados
+```
+
 ```json
 [
-  {
-    "id": 1,
-    "nome": "Acre",
-    "uf": "AC"
-  },
-  {
-    "id": 2,
-    "nome": "Alagoas",
-    "uf": "AL"
-  }
+  { "sigla": "AC", "nome": "Acre" },
+  { "sigla": "AL", "nome": "Alagoas" }
 ]
 ```
 
----
+### Buscar estado por UF
 
-### 2. Obter Informações de um Estado por UF
-**Endpoint:** `/estados/:uf`  
-**Exemplo:** `/estados/SP`  
-**Resposta:**
+```bash
+curl http://localhost:3333/estados/SP
+```
+
 ```json
 {
-  "id": 25,
+  "sigla": "SP",
   "nome": "São Paulo",
-  "uf": "SP"
+  "cidades": ["Adamantina", "Adolfo", "Aguaí", "..."]
 }
 ```
 
----
+### Listar cidades de um estado
 
-### 3. Listar Cidades de um Estado
-**Endpoint:** `/estados/:uf/cidades`  
-**Exemplo:** `/estados/SP/cidades`  
-**Resposta:**
+```bash
+curl http://localhost:3333/estados/AC/cidades
+```
+
+```json
+["Acrelândia", "Assis Brasil", "Brasiléia", "..."]
+```
+
+### Buscar cidade por nome
+
+```bash
+curl http://localhost:3333/cidades/Rio
+```
+
 ```json
 [
-  {
-    "id": 1,
-    "nome": "São Paulo"
-  },
-  {
-    "id": 2,
-    "nome": "Campinas"
-  }
+  { "cidade": "Rio Branco", "estado": "AC" },
+  { "cidade": "Rio de Janeiro", "estado": "RJ" }
 ]
 ```
 
----
+## Dados
 
-### 4. Obter Informações de uma Cidade por Nome
-**Endpoint:** `/cidades/:nome`  
-**Exemplo:** `/cidades/São Paulo`  
-**Resposta:**
-```json
-{
-  "id": 1,
-  "nome": "São Paulo",
-  "estado": "SP"
-}
+Fonte: IBGE - Instituto Brasileiro de Geografia e Estatística
+
+- **27 estados** (26 + Distrito Federal)
+- **5.595 municípios**
+- Divisão Territorial Brasileira (DTB) 2024
+
+### Nota sobre o Distrito Federal
+
+O DF não possui municípios no sentido tradicional. Possui 36 Regiões Administrativas, que são retornadas nos endpoints de cidades.
+
+## Docker
+
+```bash
+# Build
+docker build -t api-city-states-br .
+
+# Run
+docker run -p 3333:3333 api-city-states-br
 ```
 
----
+## Deploy
 
-## 👨‍💻 Sobre o Autor
+O projeto está configurado para deploy no Vercel via serverless functions.
 
-Esta API foi criada com muito carinho e dedicação por **Felipe Sousa**, um desenvolvedor apaixonado por tecnologia e inovação. Com foco em soluções práticas e eficientes, Felipe busca sempre proporcionar experiências incríveis para seus usuários.
-
----
-
-## 📞 Contato
-
-Se você tiver dúvidas, sugestões ou quiser colaborar, fique à vontade para entrar em contato:
-
-- **E-mail:** [fesousadev@gmail.com](mailto:fesousadev@gmail.com)  
-- **WhatsApp:** [(88) 99215-7767](https://wa.me/5588992157767)  
-
----
-
-✨ **Obrigado por usar a API Cidades & Estados!** ✨  
-Esperamos que ela seja útil para o seu projeto. Não se esqueça de compartilhar suas experiências e feedbacks conosco. 💻🌍❤️
+```bash
+# Push para deploy automático
+git push origin main
 ```
+
+## Estrutura do Projeto
+
+```
+src/
+├── main/
+│   ├── index.ts                    # Entry point
+│   └── routers/
+│       ├── index.ts                # Definição de rotas
+│       └── api.test.ts             # Testes de integração
+├── app/
+│   └── controllers/
+│       └── cidades-estados-controller.ts
+└── infra/
+    ├── http/
+    │   ├── index.ts                # App Express
+    │   ├── error-handler.ts        # Middleware de erros
+    │   └── validators.ts           # Validação de input
+    └── data/
+        ├── data-source.ts          # Cache em memória
+        ├── data-source.test.ts     # Testes unitários
+        └── estados-cidades.json    # Dados geográficos
+```
+
+## Licença
+
+ISC
+
+## Autor
+
+Felipe Fernandes
+
+- Email: fesousadev@gmail.com
+- GitHub: [felipefernandesdev](https://github.com/felipefernandesdev)
