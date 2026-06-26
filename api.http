@@ -1,0 +1,62 @@
+### API Cidades & Estados
+### Base URL: http://localhost:3333
+
+### Health Check
+GET http://localhost:3333/health
+
+### Info da API
+GET http://localhost:3333/
+
+### Listar todos os estados
+GET http://localhost:3333/estados
+
+### Listar estados (paginado)
+GET http://localhost:3333/estados?pagina=1&limite=10
+
+### Buscar estado por UF
+GET http://localhost:3333/estados/SP
+
+### Buscar estado por UF (case insensitive)
+GET http://localhost:3333/estados/sp
+
+### Buscar estado por nome
+GET http://localhost:3333/estado/nome/São Paulo
+
+### Buscar estado por nome (parcial)
+GET http://localhost:3333/estado/nome/paulo
+
+### Listar cidades de um estado
+GET http://localhost:3333/estados/AC/cidades
+
+### Listar cidades de SP (paginado)
+GET http://localhost:3333/estados/SP/cidades?pagina=1&limite=20
+
+### Buscar cidade por nome
+GET http://localhost:3333/cidades/Rio
+
+### Buscar cidade por nome (São Paulo)
+GET http://localhost:3333/cidades/São Paulo
+
+### Contagem de cidades por estado
+GET http://localhost:3333/estados/contagem
+
+### Busca avançada - cidades com "Rio" em SP
+GET http://localhost:3333/cidades/busca/avancada?nome=Rio&estado=SP
+
+### Busca avançada - cidades com "São" em todos os estados
+GET http://localhost:3333/cidades/busca/avancada?nome=São
+
+### Busca avançada - paginada
+GET http://localhost:3333/cidades/busca/avancada?nome=A&limite=5
+
+### Erro: UF inválida
+GET http://localhost:3333/estados/A
+
+### Erro: Estado não encontrado
+GET http://localhost:3333/estados/XX
+
+### Erro: Cidade não encontrada
+GET http://localhost:3333/cidades/CidadeInexistente123
+
+### Playground
+GET http://localhost:3333/playground
