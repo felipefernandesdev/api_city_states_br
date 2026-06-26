@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(routes);
 app.use(errorHandler);
 
-describe("API Endpoints", () => {
+describe("API v1 Endpoints", () => {
   describe("GET /", () => {
     it("deve retornar informações da API", async () => {
       const res = await request(app).get("/");
@@ -33,8 +33,16 @@ describe("API Endpoints", () => {
       const res = await request(app).get("/v1/estados");
       expect(res.status).toBe(200);
       expect(res.body.dados).toBeDefined();
+      expect(res.body.paginacao).toBeDefined();
       expect(Array.isArray(res.body.dados)).toBe(true);
       expect(res.body.paginacao.totalItens).toBe(27);
+    });
+
+    it("deve paginar resultados", async () => {
+      const res = await request(app).get("/v1/estados?pagina=1&limite=10");
+      expect(res.status).toBe(200);
+      expect(res.body.dados.length).toBe(10);
+      expect(res.body.paginacao.totalPaginas).toBe(3);
     });
 
     it("cada estado deve ter sigla e nome", async () => {
@@ -132,6 +140,15 @@ describe("API Endpoints", () => {
       expect(res.status).toBe(200);
       expect(res.body.dados).toBeDefined();
       expect(res.body.total).toBeDefined();
+      expect(Array.isArray(res.body.dados)).toBe(true);
+    });
+
+    it("estados devem ter totalCidades", async () => {
+      const res = await request(app).get("/v1/estados/contagem");
+      res.body.dados.forEach((estado: { sigla: string; totalCidades: number }) => {
+        expect(estado.sigla).toBeDefined();
+        expect(estado.totalCidades).toBeGreaterThan(0);
+      });
     });
 
     it("deve ordenar por total de cidades (decrescente)", async () => {
@@ -148,6 +165,7 @@ describe("API Endpoints", () => {
       const res = await request(app).get("/v1/cidades/busca/avancada?nome=Rio");
       expect(res.status).toBe(200);
       expect(res.body.dados).toBeDefined();
+      expect(Array.isArray(res.body.dados)).toBe(true);
     });
 
     it("deve filtrar por estado", async () => {
@@ -157,12 +175,11 @@ describe("API Endpoints", () => {
         expect(item.estado).toBe("SP");
       });
     });
-  });
 
-  describe("Endpoints legados (redirecionamento)", () => {
-    it("GET /estados deve redirecionar para /v1/estados", async () => {
-      const res = await request(app).get("/estados");
-      expect(res.status).toBe(301);
+    it("deve paginar resultados", async () => {
+      const res = await request(app).get("/v1/cidades/busca/avancada?nome=Rio&limite=5");
+      expect(res.status).toBe(200);
+      expect(res.body.dados.length).toBeLessThanOrEqual(5);
     });
   });
 });

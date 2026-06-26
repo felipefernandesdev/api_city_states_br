@@ -1,6 +1,4 @@
 import swaggerJsdoc from "swagger-jsdoc";
-import fs from "fs";
-import path from "path";
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -16,12 +14,12 @@ const options: swaggerJsdoc.Options = {
     },
     servers: [
       {
-        url: "https://api-city-states-br.vercel.app",
-        description: "Produção",
-      },
-      {
         url: "http://localhost:3333",
         description: "Desenvolvimento",
+      },
+      {
+        url: "https://api-cidades-estados.vercel.app",
+        description: "Produção",
       },
     ],
     components: {
@@ -29,37 +27,72 @@ const options: swaggerJsdoc.Options = {
         Estado: {
           type: "object",
           properties: {
-            sigla: { type: "string", example: "SP" },
-            nome: { type: "string", example: "São Paulo" },
+            sigla: {
+              type: "string",
+              example: "SP",
+            },
+            nome: {
+              type: "string",
+              example: "São Paulo",
+            },
           },
         },
         EstadoCompleto: {
           type: "object",
           properties: {
-            sigla: { type: "string", example: "SP" },
-            nome: { type: "string", example: "São Paulo" },
-            cidades: { type: "array", items: { type: "string" } },
+            sigla: {
+              type: "string",
+              example: "SP",
+            },
+            nome: {
+              type: "string",
+              example: "São Paulo",
+            },
+            cidades: {
+              type: "array",
+              items: {
+                type: "string",
+              },
+            },
           },
         },
         CidadeResultado: {
           type: "object",
           properties: {
-            cidade: { type: "string", example: "São Paulo" },
-            estado: { type: "string", example: "SP" },
+            cidade: {
+              type: "string",
+              example: "São Paulo",
+            },
+            estado: {
+              type: "string",
+              example: "SP",
+            },
           },
         },
         ContagemCidades: {
           type: "object",
           properties: {
-            sigla: { type: "string", example: "SP" },
-            nome: { type: "string", example: "São Paulo" },
-            totalCidades: { type: "number", example: 645 },
+            sigla: {
+              type: "string",
+              example: "SP",
+            },
+            nome: {
+              type: "string",
+              example: "São Paulo",
+            },
+            totalCidades: {
+              type: "number",
+              example: 645,
+            },
           },
         },
         Erro: {
           type: "object",
           properties: {
-            error: { type: "string", example: "Estado não encontrado" },
+            error: {
+              type: "string",
+              example: "Estado não encontrado",
+            },
           },
         },
       },
@@ -69,13 +102,3 @@ const options: swaggerJsdoc.Options = {
 };
 
 export const swaggerSpec = swaggerJsdoc(options);
-
-// Gerar JSON estático para o Swagger UI via CDN
-const specPath = path.join(__dirname, "../../docs/openapi.json");
-const docsDir = path.join(__dirname, "../../docs");
-
-if (!fs.existsSync(docsDir)) {
-  fs.mkdirSync(docsDir, { recursive: true });
-}
-
-fs.writeFileSync(specPath, JSON.stringify(swaggerSpec, null, 2));
