@@ -25,6 +25,8 @@ API REST para consulta de estados e cidades brasileiras. Dados oficiais do IBGE 
 | GET | `/cidades/:nome` | Busca cidade por nome |
 | GET | `/estados/contagem` | Contagem de cidades por estado |
 | GET | `/cidades/busca/avancada` | Busca avançada com filtros |
+| GET | `/cep/:cep` | Busca endereço por CEP |
+| GET | `/cep/busca/:uf/:cidade/:logradouro` | Busca CEPs por endereço |
 
 ## Setup Local
 
@@ -146,6 +148,32 @@ curl "http://localhost:3333/cidades/busca/avancada?nome=Rio&estado=SP"
 
 # Paginar resultados
 curl "http://localhost:3333/estados?pagina=2&limite=10"
+```
+
+### Consulta CEP
+
+```bash
+# Buscar por CEP
+curl http://localhost:3333/cep/01001000
+```
+
+```json
+{
+  "cep": "01001-000",
+  "logradouro": "Praça da Sé",
+  "bairro": "Sé",
+  "localidade": "São Paulo",
+  "uf": "SP",
+  "estado": "São Paulo",
+  "regiao": "Sudeste",
+  "ibge": "3550308",
+  "ddd": "11"
+}
+```
+
+```bash
+# Buscar por endereço
+curl http://localhost:3333/cep/busca/SP/São Paulo/Sé
 ```
 
 ### Playground

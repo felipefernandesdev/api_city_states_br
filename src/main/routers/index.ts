@@ -1,5 +1,6 @@
 import { Router } from "express";
 import locationsController from "../../app/controllers/cidades-estados-controller";
+import cepController from "../../app/controllers/cep-controller";
 import { validateUF, validateNome } from "../../infra/http/validators";
 import { swaggerHtml } from "../../infra/http/playground";
 
@@ -33,6 +34,10 @@ routes.get("/health", (_req, res) => {
 
 routes.get("/estados/contagem", locationsController.getContagemCidades);
 routes.get("/cidades/busca/avancada", locationsController.buscaAvancada);
+
+routes.get("/cep/:cep", cepController.buscarPorCep);
+routes.get("/cep/busca/:uf/:cidade/:logradouro", cepController.buscarPorEndereco);
+
 routes.get("/estados", locationsController.getEstados);
 routes.get("/estados/:uf", validateUF, locationsController.getEstadoPorUF);
 routes.get("/estado/nome/:nome", validateNome, locationsController.getEstadoPorNome);

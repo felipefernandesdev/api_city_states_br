@@ -31,6 +31,8 @@ API REST para consulta de estados e cidades brasileiras. API pública, sem auten
 /cidades/:nome  → Busca cidade por nome
 /estados/contagem → Contagem de cidades por estado
 /cidades/busca/avancada → Busca avançada com filtros
+/cep/:cep       → Consulta CEP (ViaCEP)
+/cep/busca/:uf/:cidade/:logradouro → Busca CEP por endereço
 ```
 
 ### Estrutura

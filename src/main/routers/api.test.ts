@@ -166,4 +166,17 @@ describe("API Endpoints", () => {
       expect(res.headers["content-type"]).toContain("text/html");
     });
   });
+
+  describe("GET /cep/:cep", () => {
+    it("deve retornar 400 para CEP inválido", async () => {
+      const res = await request(app).get("/cep/123");
+      expect(res.status).toBe(400);
+      expect(res.body.error).toContain("inválido");
+    });
+
+    it("deve retornar 400 para CEP com letras", async () => {
+      const res = await request(app).get("/cep/0100100A");
+      expect(res.status).toBe(400);
+    });
+  });
 });

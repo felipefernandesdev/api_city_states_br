@@ -110,6 +110,31 @@ Usar `express-rate-limit` com limite de 100 requests por 15 minutos.
 
 ---
 
+## ADR-011: Consulta CEP via ViaCEP
+
+**Status:** Aceito
+
+**Data:** 2026-06-26
+
+**Contexto:**
+A API poderia oferecer consulta de CEP para complementar os dados geográficos.
+
+**Decisão:**
+Integrar com ViaCEP (API gratuita) para consulta de CEPs.
+
+**Alternativas Consideradas:**
+1. BrasilAPI → Rejeitada: ViaCEP mais simples e maduro
+2. Banco próprio → Rejeitada: manutenção desnecessária
+
+**Consequências:**
+- ✅ API gratuita, sem autenticação
+- ✅ 1.586.164 CEPs na base
+- ✅ Cache em memória (24h)
+- ❌ Dependência de serviço externo
+- ❌ Rate limit do ViaCEP (uso massivo pode bloquear)
+
+---
+
 ## ADR-009: Desabilitar CSP do Helmet
 
 **Status:** Aceito
