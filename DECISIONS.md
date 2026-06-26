@@ -110,7 +110,26 @@ Usar `express-rate-limit` com limite de 100 requests por 15 minutos.
 
 ---
 
-## ADR-006: Playground HTML em vez de Swagger
+## ADR-009: Desabilitar CSP do Helmet
+
+**Status:** Aceito
+
+**Data:** 2026-06-26
+
+**Contexto:**
+O Helmet configurava Content Security Policy (CSP) que bloqueava scripts inline e event handlers, impedindo o playground de funcionar.
+
+**Decisão:**
+Desabilitar CSP do Helmet (`contentSecurityPolicy: false`).
+
+**Consequências:**
+- ✅ Playground funciona com scripts inline
+- ⚠️ Segurança reduzida (sem CSP)
+- 💡 Alternativa futura: CSP configurado para permitir apenas o playground
+
+---
+
+## ADR-010: Playground HTML Customizado
 
 **Status:** Aceito
 

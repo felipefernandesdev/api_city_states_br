@@ -27,7 +27,9 @@ class App {
 
   private middlewares(): void {
     this.app.use(cors());
-    this.app.use(helmet());
+    this.app.use(helmet({
+      contentSecurityPolicy: false,
+    }));
 
     const limiter = rateLimit({
       windowMs: 15 * 60 * 1000,
