@@ -104,6 +104,15 @@ src/
 | `076b9a2` | Melhorar qualidade dos dados geográficos |
 | `de08d63` | Atualizar README com documentação completa |
 | `c2a4a34` | Remover swagger e criar playground HTML |
+| `5924966` | Desabilitar CSP do Helmet para playground |
+
+## Issues Resolvidos
+
+| Issue | Solução |
+|-------|---------|
+| Swagger não funciona em serverless | Playground HTML customizado |
+| Botão Testar não retornava nada | Desabilitar CSP do Helmet |
+| Dados do DF incorretos | Usar regioesAdministrativas |
 
 ## Referências
 

@@ -152,6 +152,12 @@ curl "http://localhost:3333/estados?pagina=2&limite=10"
 
 Acesse `http://localhost:3333/playground` para testar os endpoints interativamente.
 
+**Produção:** https://api-city-states-br.vercel.app/playground
+
+### Teste via api.http
+
+O arquivo `api.http` contém todas as rotas prontas para teste no VS Code ou IntelliJ (com extensão REST Client).
+
 ## Dados
 
 Fonte: IBGE - Instituto Brasileiro de Geografia e Estatística
