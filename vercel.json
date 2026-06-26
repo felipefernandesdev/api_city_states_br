@@ -1,12 +1,16 @@
 {
   "version": 2,
-  "builds":[
+  "builds": [
     {
       "src": "src/main/index.ts",
       "use": "@vercel/node"
     }
   ],
   "routes": [
+    {
+      "src": "/openapi.json",
+      "dest": "src/main/index.ts"
+    },
     {
       "src": "/(.*)",
       "dest": "src/main/index.ts"
