@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { loadData, reload } from "./data-source";
+import { loadData, reload, getCidadesDoEstado } from "./data-source";
 
 describe("data-source", () => {
   beforeEach(() => {
@@ -18,13 +18,14 @@ describe("data-source", () => {
     expect(data.estados.length).toBe(27);
   });
 
-  it("cada estado deve ter sigla, nome e cidades", () => {
+  it("cada estado deve ter sigla, nome e cidades ou regioesAdministrativas", () => {
     const data = loadData();
     data.estados.forEach((estado) => {
       expect(estado.sigla).toBeDefined();
       expect(estado.nome).toBeDefined();
-      expect(Array.isArray(estado.cidades)).toBe(true);
-      expect(estado.cidades.length).toBeGreaterThan(0);
+      const cidades = getCidadesDoEstado(estado);
+      expect(Array.isArray(cidades)).toBe(true);
+      expect(cidades.length).toBeGreaterThan(0);
     });
   });
 

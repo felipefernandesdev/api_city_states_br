@@ -4,16 +4,30 @@ import path from "path";
 export type Estado = {
   sigla: string;
   nome: string;
-  cidades: string[];
+  cidades?: string[];
+  regioesAdministrativas?: string[];
+  observacao?: string;
 };
 
 export type Data = {
+  metadata?: {
+    fonte: string;
+    divisaoTerritorial: string;
+    totalEstados: number;
+    totalMunicipios: number;
+    dataAtualizacao: string;
+    observacoes: string[];
+  };
   estados: Estado[];
 };
 
 const dataPath = path.join(__dirname, "estados-cidades.json");
 
 let cachedData: Data | null = null;
+
+export const getCidadesDoEstado = (estado: Estado): string[] => {
+  return estado.cidades || estado.regioesAdministrativas || [];
+};
 
 export const loadData = (): Data => {
   if (cachedData) {

@@ -842,7 +842,7 @@
     {
       "sigla": "DF",
       "nome": "Distrito Federal",
-      "cidades": [
+      "regioesAdministrativas": [
         "Águas Claras",
         "Arniqueira",
         "Brasília",
@@ -879,7 +879,8 @@
         "Taguatinga",
         "Varjão",
         "Vicente Pires"
-      ]
+      ],
+      "observacao": "O Distrito Federal nao possui municipios, apenas Regioes Administrativas"
     },
     {
       "sigla": "ES",
@@ -5757,5 +5758,16 @@
         "Xambioá"
       ]
     }
-  ]
+  ],
+  "metadata": {
+    "fonte": "IBGE - Instituto Brasileiro de Geografia e Estatística",
+    "divisaoTerritorial": "DTB 2024",
+    "totalEstados": 27,
+    "totalMunicipios": 5595,
+    "dataAtualizacao": "2026-06-26",
+    "observacoes": [
+      "DF possui Regioes Administrativas, nao municipios",
+      "Fernando de Noronha (PE) e um Distrito Estadual"
+    ]
+  }
 }

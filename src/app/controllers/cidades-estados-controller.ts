@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { loadData } from "../../infra/data/data-source";
+import { loadData, getCidadesDoEstado } from "../../infra/data/data-source";
 
 export class CidadesEstadosController {
   getEstados = (_req: Request, res: Response): void => {
@@ -45,18 +45,20 @@ export class CidadesEstadosController {
       return;
     }
 
-    res.json(estado.cidades);
+    const cidades = getCidadesDoEstado(estado);
+    res.json(cidades);
   };
 
   getCidadesPorNome = (req: Request, res: Response): void => {
     const data = loadData();
     const nomeBusca = req.params.nome.toLowerCase();
 
-    const resultados = data.estados.flatMap((e) =>
-      e.cidades
+    const resultados = data.estados.flatMap((e) => {
+      const cidades = getCidadesDoEstado(e);
+      return cidades
         .filter((cidade) => cidade.toLowerCase().includes(nomeBusca))
-        .map((cidade) => ({ cidade, estado: e.sigla }))
-    );
+        .map((cidade) => ({ cidade, estado: e.sigla }));
+    });
 
     if (resultados.length === 0) {
       res.status(404).json({ error: "Nenhuma cidade encontrada" });
