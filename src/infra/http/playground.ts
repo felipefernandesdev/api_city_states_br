@@ -4,176 +4,478 @@ export const swaggerHtml = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>API Cidades & Estados - Playground</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-hover: #334155;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --primary-hover: #2563eb;
+      --success: #22c55e;
+      --error: #ef4444;
+      --code-bg: #0d1117;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f5f5; color: #333; }
-    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-    header { background: #2563eb; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-    header h1 { font-size: 1.5rem; }
-    header p { opacity: 0.9; margin-top: 5px; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-    .endpoint { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .endpoint h3 { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-    .method { background: #22c55e; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
-    .method.get { background: #22c55e; }
-    .path { font-family: monospace; color: #2563eb; }
-    .endpoint p { color: #666; font-size: 0.9rem; margin-bottom: 15px; }
-    .params { background: #f8fafc; padding: 10px; border-radius: 4px; margin-bottom: 15px; font-size: 0.85rem; }
-    .params code { background: #e2e8f0; padding: 2px 6px; border-radius: 3px; }
-    .try-it { display: flex; gap: 10px; margin-bottom: 10px; }
-    .try-it input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-family: monospace; }
-    .try-it button { background: #2563eb; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; }
-    .try-it button:hover { background: #1d4ed8; }
-    .try-it button:disabled { background: #94a3b8; cursor: not-allowed; }
-    .response { background: #1e293b; color: #22c55e; padding: 15px; border-radius: 4px; font-family: monospace; font-size: 0.8rem; white-space: pre-wrap; max-height: 300px; overflow-y: auto; display: none; }
-    .response.error { color: #ef4444; }
-    .loading { color: #94a3b8; }
-    footer { text-align: center; padding: 20px; color: #666; font-size: 0.85rem; }
+    
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: var(--bg); 
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
+      padding: 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: rgba(255,255,255,0.8);
+      font-size: 0.95rem;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .endpoints {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
+      gap: 16px;
+    }
+
+    .endpoint {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      transition: border-color 0.2s;
+    }
+
+    .endpoint:hover {
+      border-color: var(--primary);
+    }
+
+    .endpoint-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .method {
+      background: var(--success);
+      color: white;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+
+    .endpoint-path {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 500;
+    }
+
+    .endpoint-desc {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 16px;
+      line-height: 1.5;
+    }
+
+    .endpoint-params {
+      background: var(--code-bg);
+      padding: 10px 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .endpoint-params code {
+      background: var(--surface-hover);
+      color: var(--text);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .input-group input {
+      flex: 1;
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .input-group input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn-test {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-test:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-test:active {
+      transform: translateY(0);
+    }
+
+    .btn-test:disabled {
+      background: var(--surface-hover);
+      color: var(--text-muted);
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .response {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+      max-height: 300px;
+      overflow-y: auto;
+      display: none;
+      line-height: 1.6;
+    }
+
+    .response.visible {
+      display: block;
+    }
+
+    .response.success {
+      color: var(--success);
+      border-color: rgba(34, 197, 94, 0.3);
+    }
+
+    .response.error {
+      color: var(--error);
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    .response.loading {
+      color: var(--text-muted);
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .status-badge.success {
+      background: rgba(34, 197, 94, 0.15);
+      color: var(--success);
+    }
+
+    .status-badge.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: var(--error);
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 32px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    .footer a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 12px;
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-value {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+      .endpoints {
+        grid-template-columns: 1fr;
+      }
+      
+      .header {
+        padding: 24px 16px;
+      }
+      
+      .container {
+        padding: 16px;
+      }
+    }
   </style>
 </head>
 <body>
+  <div class="header">
+    <h1>API Cidades & Estados</h1>
+    <p>Playground interativo para testar os endpoints da API</p>
+  </div>
+
   <div class="container">
-    <header>
-      <h1>API Cidades & Estados</h1>
-      <p>Playground interativo para testar os endpoints</p>
-    </header>
+    <div class="endpoints">
 
-    <div class="grid">
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/estados</span></h3>
-        <p>Lista todos os 27 estados brasileiros</p>
-        <div class="params">
-          Query: <code>pagina</code> (default: 1), <code>limite</code> (default: 27)
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/estados</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-estados" value="/estados" placeholder="/estados">
-          <button onclick="tryEndpoint('input-estados', 'response-estados')">Testar</button>
+        <p class="endpoint-desc">Lista todos os 27 estados brasileiros</p>
+        <div class="endpoint-params">
+          Query: <code>pagina</code> <code>limite</code>
         </div>
-        <pre class="response" id="response-estados"></pre>
+        <div class="input-group">
+          <input type="text" id="input-estados" value="/estados">
+          <button class="btn-test" onclick="tryEndpoint('input-estados', 'response-estados')">Testar</button>
+        </div>
+        <div id="response-estados" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/estados/:uf</span></h3>
-        <p>Busca estado pela UF (sigla)</p>
-        <div class="params">
-          Exemplos: <code>SP</code>, <code>RJ</code>, <code>MG</code>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/estados/:uf</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-uf" value="/estados/SP" placeholder="/estados/UF">
-          <button onclick="tryEndpoint('input-uf', 'response-uf')">Testar</button>
+        <p class="endpoint-desc">Busca estado pela UF (sigla)</p>
+        <div class="endpoint-params">
+          Exemplos: <code>SP</code> <code>RJ</code> <code>MG</code> <code>AC</code>
         </div>
-        <pre class="response" id="response-uf"></pre>
+        <div class="input-group">
+          <input type="text" id="input-uf" value="/estados/SP">
+          <button class="btn-test" onclick="tryEndpoint('input-uf', 'response-uf')">Testar</button>
+        </div>
+        <div id="response-uf" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/estado/nome/:nome</span></h3>
-        <p>Busca estado por nome (busca parcial)</p>
-        <div class="params">
-          Exemplos: <code>São Paulo</code>, <code>rio</code>, <code>minas</code>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/estado/nome/:nome</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-nome-estado" value="/estado/nome/São Paulo" placeholder="/estado/nome/NOME">
-          <button onclick="tryEndpoint('input-nome-estado', 'response-nome-estado')">Testar</button>
+        <p class="endpoint-desc">Busca estado por nome (busca parcial)</p>
+        <div class="endpoint-params">
+          Exemplos: <code>São Paulo</code> <code>rio</code> <code>minas</code>
         </div>
-        <pre class="response" id="response-nome-estado"></pre>
+        <div class="input-group">
+          <input type="text" id="input-nome-estado" value="/estado/nome/São Paulo">
+          <button class="btn-test" onclick="tryEndpoint('input-nome-estado', 'response-nome-estado')">Testar</button>
+        </div>
+        <div id="response-nome-estado" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/estados/:uf/cidades</span></h3>
-        <p>Lista todas as cidades de um estado</p>
-        <div class="params">
-          Query: <code>pagina</code>, <code>limite</code>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/estados/:uf/cidades</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-cidades-uf" value="/estados/AC/cidades" placeholder="/estados/UF/cidades">
-          <button onclick="tryEndpoint('input-cidades-uf', 'response-cidades-uf')">Testar</button>
+        <p class="endpoint-desc">Lista todas as cidades de um estado</p>
+        <div class="endpoint-params">
+          Query: <code>pagina</code> <code>limite</code>
         </div>
-        <pre class="response" id="response-cidades-uf"></pre>
+        <div class="input-group">
+          <input type="text" id="input-cidades-uf" value="/estados/AC/cidades">
+          <button class="btn-test" onclick="tryEndpoint('input-cidades-uf', 'response-cidades-uf')">Testar</button>
+        </div>
+        <div id="response-cidades-uf" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/cidades/:nome</span></h3>
-        <p>Busca cidades por nome em todos os estados</p>
-        <div class="params">
-          Exemplos: <code>Rio</code>, <code>São Paulo</code>, <code>Fortaleza</code>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/cidades/:nome</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-cidade-nome" value="/cidades/Rio" placeholder="/cidades/NOME">
-          <button onclick="tryEndpoint('input-cidade-nome', 'response-cidade-nome')">Testar</button>
+        <p class="endpoint-desc">Busca cidades por nome em todos os estados</p>
+        <div class="endpoint-params">
+          Exemplos: <code>Rio</code> <code>São Paulo</code> <code>Fortaleza</code>
         </div>
-        <pre class="response" id="response-cidade-nome"></pre>
+        <div class="input-group">
+          <input type="text" id="input-cidade-nome" value="/cidades/Rio">
+          <button class="btn-test" onclick="tryEndpoint('input-cidade-nome', 'response-cidade-nome')">Testar</button>
+        </div>
+        <div id="response-cidade-nome" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/estados/contagem</span></h3>
-        <p>Retorna total de cidades por estado (ordenado)</p>
-        <div class="try-it">
-          <input type="text" id="input-contagem" value="/estados/contagem" placeholder="/estados/contagem">
-          <button onclick="tryEndpoint('input-contagem', 'response-contagem')">Testar</button>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/estados/contagem</span>
         </div>
-        <pre class="response" id="response-contagem"></pre>
+        <p class="endpoint-desc">Retorna total de cidades por estado (ordenado)</p>
+        <div class="input-group">
+          <input type="text" id="input-contagem" value="/estados/contagem">
+          <button class="btn-test" onclick="tryEndpoint('input-contagem', 'response-contagem')">Testar</button>
+        </div>
+        <div id="response-contagem" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/cidades/busca/avancada</span></h3>
-        <p>Busca avançada com filtros</p>
-        <div class="params">
-          Query: <code>nome</code>, <code>estado</code> (UF), <code>pagina</code>, <code>limite</code>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/cidades/busca/avancada</span>
         </div>
-        <div class="try-it">
-          <input type="text" id="input-busca" value="/cidades/busca/avancada?nome=Rio&estado=SP" placeholder="/cidades/busca/avancada?nome=X&estado=UF">
-          <button onclick="tryEndpoint('input-busca', 'response-busca')">Testar</button>
+        <p class="endpoint-desc">Busca avançada com filtros</p>
+        <div class="endpoint-params">
+          Query: <code>nome</code> <code>estado</code> (UF) <code>pagina</code> <code>limite</code>
         </div>
-        <pre class="response" id="response-busca"></pre>
+        <div class="input-group">
+          <input type="text" id="input-busca" value="/cidades/busca/avancada?nome=Rio&estado=SP">
+          <button class="btn-test" onclick="tryEndpoint('input-busca', 'response-busca')">Testar</button>
+        </div>
+        <div id="response-busca" class="response"></div>
       </div>
 
       <div class="endpoint">
-        <h3><span class="method get">GET</span> <span class="path">/health</span></h3>
-        <p>Health check da API</p>
-        <div class="try-it">
-          <input type="text" id="input-health" value="/health" placeholder="/health">
-          <button onclick="tryEndpoint('input-health', 'response-health')">Testar</button>
+        <div class="endpoint-header">
+          <span class="method">GET</span>
+          <span class="endpoint-path">/health</span>
         </div>
-        <pre class="response" id="response-health"></pre>
+        <p class="endpoint-desc">Health check da API</p>
+        <div class="input-group">
+          <input type="text" id="input-health" value="/health">
+          <button class="btn-test" onclick="tryEndpoint('input-health', 'response-health')">Testar</button>
+        </div>
+        <div id="response-health" class="response"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>API Cidades & Estados v1.1.0</p>
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-value">27</span> estados
+      </div>
+      <div class="stat">
+        <span class="stat-value">5.595</span> municípios
+      </div>
+      <div class="stat">
+        Fonte: <span class="stat-value">IBGE DTB 2024</span>
       </div>
     </div>
-
-    <footer>
-      API Cidades & Estados v1.1.0 | Dados: IBGE DTB 2024 | 5.595 municípios
-    </footer>
   </div>
 
   <script>
+    const BASE_URL = window.location.origin;
+
     async function tryEndpoint(inputId, responseId) {
       const input = document.getElementById(inputId);
-      const response = document.getElementById(responseId);
-      const btn = input.parentElement.querySelector('button');
+      const responseEl = document.getElementById(responseId);
+      const btn = input.parentElement.querySelector('.btn-test');
+      const path = input.value.trim();
       
+      if (!path) {
+        responseEl.className = 'response visible error';
+        responseEl.textContent = 'Digite um endpoint válido';
+        return;
+      }
+
       btn.disabled = true;
       btn.textContent = 'Carregando...';
-      response.style.display = 'block';
-      response.className = 'response loading';
-      response.textContent = 'Carregando...';
+      responseEl.className = 'response visible loading';
+      responseEl.innerHTML = '<span class="status-badge loading"><span class="status-dot"></span> Requisitando...</span>';
       
       try {
-        const res = await fetch(input.value);
+        const url = BASE_URL + path;
+        const res = await fetch(url);
         const data = await res.json();
         
-        response.className = res.ok ? 'response' : 'response error';
-        response.textContent = JSON.stringify(data, null, 2);
+        const statusClass = res.ok ? 'success' : 'error';
+        const statusText = res.ok ? res.status + ' OK' : res.status + ' ' + res.statusText;
+        
+        responseEl.className = 'response visible ' + statusClass;
+        responseEl.innerHTML = '<span class="status-badge ' + statusClass + '"><span class="status-dot"></span> ' + statusText + '</span>\\n' + JSON.stringify(data, null, 2);
       } catch (err) {
-        response.className = 'response error';
-        response.textContent = 'Erro: ' + err.message;
+        responseEl.className = 'response visible error';
+        responseEl.innerHTML = '<span class="status-badge error"><span class="status-dot"></span> Erro de conexão</span>\\n' + err.message;
       } finally {
         btn.disabled = false;
         btn.textContent = 'Testar';
       }
     }
 
-    document.querySelectorAll('.try-it input').forEach(input => {
+    document.querySelectorAll('.input-group input').forEach(input => {
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          input.parentElement.querySelector('button').click();
+          input.parentElement.querySelector('.btn-test').click();
         }
       });
     });
